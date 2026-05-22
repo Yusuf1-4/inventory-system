@@ -7,7 +7,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <form method="POST" action="{{ route('stock-receipts.store') }}">
+                    <form method="POST" action="{{ route('stock-receipts.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-4">
@@ -62,6 +62,35 @@
                             <input type="date" name="received_date" value="{{ old('received_date', date('Y-m-d')) }}"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                             @error('received_date')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <!-- Document Uploads -->
+                        <div class="border-t border-gray-200 my-6 pt-4">
+                            <h3 class="text-sm font-medium text-gray-900 mb-4">Supporting Documents (PDF, Docx, or Images)</h3>
+
+                            <!-- Good Received Note (GRN) -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Goods Received Note (GRN)</label>
+                                <input type="file" name="grn_file"
+                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                @error('grn_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+
+                            <!-- Delivery Order (DO) -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Order (DO) *</label>
+                                <input type="file" name="do_file"
+                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                @error('do_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+
+                            <!-- Certificate of Analysis (COA) -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Certificate of Analysis (COA)</label>
+                                <input type="file" name="coa_file"
+                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                @error('coa_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
                         </div>
 
                         <div class="mb-6">
