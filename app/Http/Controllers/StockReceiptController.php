@@ -42,6 +42,7 @@ class StockReceiptController extends Controller
             'item_id'       => 'required|exists:items,id',
             'quantity'      => 'required|integer|min:1|max:10000',
             'supplier_name' => 'required|string|max:255',
+            'grn_number'    => 'required|string|max:100',
             'lot_number'    => 'required|string|max:100',
             'expiry_date'   => 'nullable|date',
             'received_date' => 'required|date',

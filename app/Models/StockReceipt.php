@@ -11,7 +11,7 @@ class StockReceipt extends Model
 
     protected $fillable = [
         'type', 'item_request_id',
-        'item_id', 'received_by', 'quantity', 'supplier_name',
+        'item_id', 'received_by', 'quantity', 'supplier_name', 'grn_number',
         'lot_number', 'batch_number', 'expiry_date', 'received_date', 'notes',
         'grn_file', 'do_file', 'coa_file', // Added for supporting document uploads
     ];

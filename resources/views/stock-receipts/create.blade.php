@@ -42,6 +42,15 @@
                         </div>
 
                         <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">GRN No. *</label>
+                            <input type="text" name="grn_number" value="{{ old('grn_number') }}"
+                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="e.g. 00123">
+                            <p class="text-xs text-gray-400 mt-1">The official document number for this Goods Received Note.</p>
+                            @error('grn_number')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lot No (from Supplier) *</label>
                             <input type="text" name="lot_number" value="{{ old('lot_number') }}"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
