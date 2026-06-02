@@ -39,59 +39,63 @@
                 <div class="p-6">
                     @if($type === 'supplier')
                     {{-- ── SUPPLIER RECEIPTS TABLE ────────────────────────────────── --}}
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
-                            <tr>
-                                <th class="px-4 py-3">Date</th>
-                                <th class="px-4 py-3">Item</th>
-                                <th class="px-4 py-3">Supplier</th>
-                                <th class="px-4 py-3">GRN No.</th>
-                                <th class="px-4 py-3">Lot No</th>
-                                <th class="px-4 py-3">Expiry Date</th>
-                                <th class="px-4 py-3 text-right">Qty Received</th>
-                                <th class="px-4 py-3">Received By</th>
-                                <th class="px-4 py-3">Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @forelse($receipts as $receipt)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3">
-                                    <a href="{{ route('stock-receipts.show', $receipt) }}" class="text-indigo-600 hover:underline text-xs">
-                                        {{ $receipt->received_date->format('d M Y') }}
-                                    </a>
-                                </td>
-                                <td class="px-4 py-3 font-medium">
-                                    <a href="{{ route('items.show', $receipt->item) }}" class="text-indigo-600 hover:underline">{{ $receipt->item->name }}</a>
-                                    <div class="text-xs text-gray-400">{{ $receipt->item->code }}</div>
-                                </td>
-                                <td class="px-4 py-3">{{ $receipt->supplier_name }}</td>
-                                <td class="px-4 py-3 font-mono text-xs text-gray-700 font-semibold">{{ $receipt->grn_number ?? '-' }}</td>
-                                <td class="px-4 py-3 font-mono text-xs text-indigo-700 font-semibold">{{ $receipt->lot_number ?? '-' }}</td>
-                                <td class="px-4 py-3 text-sm">
-                                    @if($receipt->expiry_date)
-                                        @php $daysLeft = now()->startOfDay()->diffInDays($receipt->expiry_date, false); @endphp
-                                        <span class="font-medium {{ $daysLeft < 0 ? 'text-red-600' : ($daysLeft <= 90 ? 'text-orange-500' : 'text-gray-700') }}">
-                                            {{ $receipt->expiry_date->format('d M Y') }}
-                                        </span>
-                                        @if($daysLeft < 0)
-                                            <span class="ml-1 text-xs bg-red-100 text-red-600 rounded px-1">Expired</span>
-                                        @elseif($daysLeft <= 90)
-                                            <span class="ml-1 text-xs bg-orange-100 text-orange-600 rounded px-1">{{ $daysLeft }}d left</span>
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-sm text-left whitespace-nowrap">
+                            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+                                <tr>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Item</th>
+                                    <th class="px-4 py-3">Supplier</th>
+                                    <th class="px-4 py-3">GRN No</th>
+                                    <th class="px-4 py-3">Lot No</th>
+                                    <th class="px-4 py-3">Expiry Date</th>
+                                    <th class="px-4 py-3 text-right">Qty Received</th>
+                                    <th class="px-4 py-3">Received By</th>
+                                    <th class="px-4 py-3">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @forelse($receipts as $receipt)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3">
+                                        <a href="{{ route('stock-receipts.show', $receipt) }}" class="text-indigo-600 hover:underline text-xs">
+                                            {{ $receipt->received_date->format('d M Y') }}
+                                        </a>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">
+                                        <a href="{{ route('items.show', $receipt->item) }}" class="text-indigo-600 hover:underline">{{ $receipt->item->name }}</a>
+                                        <div class="text-xs text-gray-400">{{ $receipt->item->code }}</div>
+                                    </td>
+                                    <td class="px-4 py-3">{{ $receipt->supplier_name }}</td>
+                                    <td class="px-4 py-3 font-mono text-xs text-gray-700">{{ $receipt->grn_number ?? '-' }}</td>
+                                    <td class="px-4 py-3 font-mono text-xs text-indigo-700 font-semibold">{{ $receipt->lot_number ?? '-' }}</td>
+                                    <td class="px-4 py-3 text-sm">
+                                        @if($receipt->expiry_date)
+                                            @php $daysLeft = now()->startOfDay()->diffInDays($receipt->expiry_date, false); @endphp
+                                            <span class="font-medium {{ $daysLeft < 0 ? 'text-red-600' : ($daysLeft <= 90 ? 'text-orange-500' : 'text-gray-700') }}">
+                                                {{ $receipt->expiry_date->format('d M Y') }}
+                                            </span>
+                                            @if($daysLeft < 0)
+                                                <span class="ml-2 text-xs bg-red-100 text-red-600 rounded px-1.5 py-0.5">Expired</span>
+                                            @elseif($daysLeft <= 90)
+                                                <span class="ml-2 text-xs bg-orange-100 text-orange-600 rounded px-1.5 py-0.5">{{ $daysLeft }}d left</span>
+                                            @endif
+                                        @else
+                                            <span class="text-gray-300">—</span>
                                         @endif
-                                    @else
-                                        <span class="text-gray-300">—</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-right text-green-600 font-semibold">+{{ number_format($receipt->quantity, 2) }} {{ $receipt->item->unit }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ $receipt->receiver->name }}</td>
-                                <td class="px-4 py-3 text-gray-400">{{ $receipt->notes ?? '-' }}</td>
-                            </tr>
-                            @empty
-                            <tr><td colspan="9" class="px-4 py-6 text-center text-gray-400">No supplier receipts yet. <a href="{{ route('stock-receipts.create') }}" class="text-indigo-600 hover:underline">Record first receipt</a></td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                    </td>
+                                    <td class="px-4 py-3 text-right text-green-600 font-semibold">+{{ number_format($receipt->quantity, 2) }} {{ $receipt->item->unit }}</td>
+                                    <td class="px-4 py-3 text-gray-500">{{ $receipt->receiver->name }}</td>
+                                    <td class="px-4 py-3 text-gray-400 max-w-xs truncate" title="{{ $receipt->notes }}">
+                                        {{ $receipt->notes ?? '-' }}
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr><td colspan="9" class="px-4 py-6 text-center text-gray-400">No supplier receipts yet. <a href="{{ route('stock-receipts.create') }}" class="text-indigo-600 hover:underline">Record first receipt</a></td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
 
                     @else
                     {{-- ── PRODUCTION RETURNS TABLE ───────────────────────────────── --}}
