@@ -7,12 +7,14 @@ use Illuminate\Support\Collection;
 
 class PagePermission extends Model
 {
-    protected $fillable = ['key', 'label', 'description', 'admin', 'supervisor', 'operator'];
+    protected $fillable = ['key', 'label', 'description', 'admin', 'supervisor', 'operator', 'qa', 'qc'];
 
     protected $casts = [
         'admin'      => 'boolean',
         'supervisor' => 'boolean',
         'operator'   => 'boolean',
+        'qa'         => 'boolean',
+        'qc'         => 'boolean',
     ];
 
     /** Per-request cache so we only query once per request lifecycle. */

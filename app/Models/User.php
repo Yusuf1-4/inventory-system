@@ -55,6 +55,16 @@ class User extends Authenticatable
         return $this->role === 'operator';
     }
 
+    public function isQA(): bool
+    {
+        return $this->role === 'qa';
+    }
+
+    public function isQc(): bool
+    {
+        return $this->role === 'qc';
+    }
+
     public function hasRole(string|array $roles): bool
     {
         return in_array($this->role, (array) $roles);
@@ -63,5 +73,11 @@ class User extends Authenticatable
     public function canAccess(string $permissionKey): bool
     {
         return PagePermission::canRole($this->role, $permissionKey);
+    }
+
+    // Useful if a feature is shared by multiple warehouse authority roles
+    public function isQualityTeam(): bool
+    {
+        return in_array($this->role, ['qa', 'qc', 'admin']);
     }
 }

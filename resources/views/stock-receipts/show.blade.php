@@ -67,6 +67,68 @@
                     <div class="col-span-2"><div class="text-xs text-gray-500">Notes</div><div>{{ $stockReceipt->notes ?? '-' }}</div></div>
                 </div>
 
+                {{-- Attached Documents Section --}}
+                @if($stockReceipt->type === 'supplier')
+                <div class="col-span-2 pt-4 border-t mt-4">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Attached Documents</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+                        <!-- GRN Document -->
+                        <div class="border rounded-md p-3 flex flex-col justify-between bg-gray-50">
+                            <div>
+                                <div class="text-xs text-gray-500 font-medium">Goods Received Note</div>
+                                <div class="text-sm font-semibold text-gray-800 mt-0.5 truncate">
+                                    {{ $stockReceipt->grn_file ? basename($stockReceipt->grn_file) : 'No file attached' }}
+                                </div>
+                            </div>
+                            @if($stockReceipt->grn_file)
+                            <div class="mt-3">
+                                <a href="{{ Storage::url($stockReceipt->grn_file) }}" target="_blank"
+                                class="inline-flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-900 bg-white border shadow-sm px-2.5 py-1.5 rounded-md">
+                                    👁️ View Document
+                                </a>
+                            </div>
+                            @endif
+                        </div>
+
+                        <!-- DO Document (Required Field) -->
+                        <div class="border rounded-md p-3 flex flex-col justify-between bg-gray-50">
+                            <div>
+                                <div class="text-xs text-gray-500 font-medium">Delivery Order *</div>
+                                <div class="text-sm font-semibold text-gray-800 mt-0.5 truncate">
+                                    {{ basename($stockReceipt->do_file) }}
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{{ Storage::url($stockReceipt->do_file) }}" target="_blank"
+                                class="inline-flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-900 bg-white border shadow-sm px-2.5 py-1.5 rounded-md">
+                                    👁️ View Document
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- COA Document -->
+                        <div class="border rounded-md p-3 flex flex-col justify-between bg-gray-50">
+                            <div>
+                                <div class="text-xs text-gray-500 font-medium">Certificate of Analysis</div>
+                                <div class="text-sm font-semibold text-gray-800 mt-0.5 truncate">
+                                    {{ $stockReceipt->coa_file ? basename($stockReceipt->coa_file) : 'No file attached' }}
+                                </div>
+                            </div>
+                            @if($stockReceipt->coa_file)
+                            <div class="mt-3">
+                                <a href="{{ Storage::url($stockReceipt->coa_file) }}" target="_blank"
+                                class="inline-flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-900 bg-white border shadow-sm px-2.5 py-1.5 rounded-md">
+                                    👁️ View Document
+                                </a>
+                            </div>
+                            @endif
+                        </div>
+
+                    </div>
+                </div>
+                @endif
+
                 <div class="pt-4 border-t">
                     <a href="{{ route('stock-receipts.index', ['type' => $stockReceipt->type]) }}" class="text-gray-500 hover:underline text-sm">&larr; Back to Stock Received</a>
                 </div>

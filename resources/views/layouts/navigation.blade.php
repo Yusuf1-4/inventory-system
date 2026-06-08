@@ -64,8 +64,14 @@
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
                             <span class="ml-2 text-xs px-1.5 py-0.5 rounded
-                                {{ Auth::user()->isAdmin() ? 'bg-red-100 text-red-700' : (Auth::user()->isSupervisor() ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700') }}">
-                                {{ ucfirst(Auth::user()->role) }}
+                                @switch(true)
+                                    @case(Auth::user()->isAdmin()) bg-red-100 text-red-700 @break
+                                    @case(Auth::user()->isSupervisor()) bg-yellow-100 text-yellow-700 @break
+                                    @case(Auth::user()->isQA()) bg-blue-100 text-blue-700 @break
+                                    @case(Auth::user()->isQC()) bg-purple-100 text-purple-700 @break
+                                    @default bg-green-100 text-green-700
+                                @endswitch">
+                                {{ strtoupper(Auth::user()->role) }}
                             </span>
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

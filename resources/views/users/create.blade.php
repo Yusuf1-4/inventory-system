@@ -33,6 +33,8 @@
                                 <option value="admin"      {{ old('role') === 'admin'      ? 'selected' : '' }}>Admin</option>
                                 <option value="supervisor" {{ old('role') === 'supervisor' ? 'selected' : '' }}>Supervisor</option>
                                 <option value="operator"   {{ old('role') === 'operator'   ? 'selected' : '' }}>Operator</option>
+                                <option value="qa"   {{ old('role') === 'qa'   ? 'selected' : '' }}>QA</option>
+                                <option value="qc"   {{ old('role') === 'qc'   ? 'selected' : '' }}>QC</option>
                             </select>
                             @error('role')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>

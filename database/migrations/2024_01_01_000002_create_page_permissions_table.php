@@ -16,6 +16,8 @@ return new class extends Migration
             $table->boolean('admin')->default(true);      // always true, not editable
             $table->boolean('supervisor')->default(false);
             $table->boolean('operator')->default(false);
+            $table->boolean('qa')->default(false);
+            $table->boolean('qc')->default(false);
             $table->timestamps();
         });
     }

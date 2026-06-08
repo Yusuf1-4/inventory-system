@@ -45,6 +45,7 @@
                                 <th class="px-4 py-3">Date</th>
                                 <th class="px-4 py-3">Item</th>
                                 <th class="px-4 py-3">Supplier</th>
+                                <th class="px-4 py-3">GRN No.</th>
                                 <th class="px-4 py-3">Lot No</th>
                                 <th class="px-4 py-3">Expiry Date</th>
                                 <th class="px-4 py-3 text-right">Qty Received</th>
@@ -65,6 +66,7 @@
                                     <div class="text-xs text-gray-400">{{ $receipt->item->code }}</div>
                                 </td>
                                 <td class="px-4 py-3">{{ $receipt->supplier_name }}</td>
+                                <td class="px-4 py-3 font-mono text-xs text-gray-700 font-semibold">{{ $receipt->grn_number ?? '-' }}</td>
                                 <td class="px-4 py-3 font-mono text-xs text-indigo-700 font-semibold">{{ $receipt->lot_number ?? '-' }}</td>
                                 <td class="px-4 py-3 text-sm">
                                     @if($receipt->expiry_date)
@@ -86,7 +88,7 @@
                                 <td class="px-4 py-3 text-gray-400">{{ $receipt->notes ?? '-' }}</td>
                             </tr>
                             @empty
-                            <tr><td colspan="8" class="px-4 py-6 text-center text-gray-400">No supplier receipts yet. <a href="{{ route('stock-receipts.create') }}" class="text-indigo-600 hover:underline">Record first receipt</a></td></tr>
+                            <tr><td colspan="9" class="px-4 py-6 text-center text-gray-400">No supplier receipts yet. <a href="{{ route('stock-receipts.create') }}" class="text-indigo-600 hover:underline">Record first receipt</a></td></tr>
                             @endforelse
                         </tbody>
                     </table>

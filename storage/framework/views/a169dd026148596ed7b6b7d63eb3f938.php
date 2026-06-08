@@ -1,18 +1,27 @@
-<x-app-layout>
-    <x-slot name="header">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(App\View\Components\AppLayout::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Security Authorization</h2>
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <div class="py-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
 
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded">{{ session('success') }}</div>
-            @endif
+            <?php if(session('success')): ?>
+                <div class="mb-4 bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded"><?php echo e(session('success')); ?></div>
+            <?php endif; ?>
 
             <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden">
 
-                {{-- Header bar --}}
+                
                 <div class="bg-gray-700 text-white px-6 py-4 flex items-center gap-3">
                     <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -21,7 +30,7 @@
                     <span class="font-semibold tracking-wide">Page Access Rights Configuration</span>
                 </div>
 
-                {{-- Role legend --}}
+                
                 <div class="px-6 py-3 bg-gray-50 border-b flex gap-6 text-sm">
                     <span class="flex items-center gap-1.5">
                         <span class="w-3 h-3 rounded-full bg-red-400 inline-block"></span>
@@ -45,9 +54,9 @@
                     </span>
                 </div>
 
-                <form method="POST" action="{{ route('authorization.update') }}">
-                    @csrf
-                    @method('PUT')
+                <form method="POST" action="<?php echo e(route('authorization.update')); ?>">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
 
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -63,58 +72,62 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
-                            @foreach($permissions as $perm)
+                            <?php $__currentLoopData = $permissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $perm): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-xs text-gray-400 font-mono">P{{ str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</td>
+                                <td class="px-6 py-4 text-xs text-gray-400 font-mono">P<?php echo e(str_pad($loop->iteration, 3, '0', STR_PAD_LEFT)); ?></td>
                                 <td class="px-6 py-4">
-                                    <div class="font-medium text-gray-900 text-sm">{{ $perm->label }}</div>
-                                    <div class="text-xs text-gray-400 font-mono mt-0.5">{{ $perm->key }}</div>
+                                    <div class="font-medium text-gray-900 text-sm"><?php echo e($perm->label); ?></div>
+                                    <div class="text-xs text-gray-400 font-mono mt-0.5"><?php echo e($perm->key); ?></div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">{{ $perm->description }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500"><?php echo e($perm->description); ?></td>
 
-                                {{-- Admin: always locked ON --}}
+                                
                                 <td class="px-6 py-4 text-center">
                                     <input type="checkbox" checked disabled
                                         class="w-4 h-4 rounded border-gray-300 text-red-500 cursor-not-allowed opacity-60">
                                 </td>
 
-                                {{-- Supervisor --}}
+                                
                                 <td class="px-6 py-4 text-center">
                                     <input type="checkbox"
-                                        name="supervisor[{{ str_replace('.', '_', $perm->key) }}]"
+                                        name="supervisor[<?php echo e(str_replace('.', '_', $perm->key)); ?>]"
                                         value="1"
-                                        {{ $perm->supervisor ? 'checked' : '' }}
+                                        <?php echo e($perm->supervisor ? 'checked' : ''); ?>
+
                                         class="w-4 h-4 rounded border-gray-300 text-yellow-500 focus:ring-yellow-400 cursor-pointer">
                                 </td>
 
-                                {{-- Operator --}}
+                                
                                 <td class="px-6 py-4 text-center">
                                     <input type="checkbox"
-                                        name="operator[{{ str_replace('.', '_', $perm->key) }}]"
+                                        name="operator[<?php echo e(str_replace('.', '_', $perm->key)); ?>]"
                                         value="1"
-                                        {{ $perm->operator ? 'checked' : '' }}
+                                        <?php echo e($perm->operator ? 'checked' : ''); ?>
+
                                         class="w-4 h-4 rounded border-gray-300 text-green-500 focus:ring-green-400 cursor-pointer">
                                 </td>
 
-                                {{-- QC --}}
+                                
                                 <td class="px-6 py-4 text-center">
                                     <input type="checkbox"
-                                        name="qc[{{ str_replace('.', '_', $perm->key) }}]"
+                                        name="qc[<?php echo e(str_replace('.', '_', $perm->key)); ?>]"
                                         value="1"
-                                        {{ $perm->qc ? 'checked' : '' }}
+                                        <?php echo e($perm->qc ? 'checked' : ''); ?>
+
                                         class="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-400 cursor-pointer">
                                 </td>
 
-                                {{-- QA --}}
+                                
                                 <td class="px-6 py-4 text-center">
                                     <input type="checkbox"
-                                        name="qa[{{ str_replace('.', '_', $perm->key) }}]"
+                                        name="qa[<?php echo e(str_replace('.', '_', $perm->key)); ?>]"
                                         value="1"
-                                        {{ $perm->qa ? 'checked' : '' }}
+                                        <?php echo e($perm->qa ? 'checked' : ''); ?>
+
                                         class="w-4 h-4 rounded border-gray-300 text-purple-500 focus:ring-purple-400 cursor-pointer">
                                 </td>
                             </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
 
@@ -128,11 +141,21 @@
                 </form>
             </div>
 
-            {{-- Info box --}}
+            
             <div class="mt-4 bg-blue-50 border border-blue-200 rounded p-4 text-sm text-blue-700">
                 <strong>Note:</strong> Admin always has full access to all pages and cannot be restricted.
                 User Management and this Authorization page are always Admin-only.
             </div>
         </div>
     </div>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH C:\Users\User\inventory-system\resources\views/authorization/index.blade.php ENDPATH**/ ?>
