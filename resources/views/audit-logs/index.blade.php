@@ -15,7 +15,7 @@
                             <option value="">All Users</option>
                             @foreach($users as $u)
                                 <option value="{{ $u->id }}" @selected(request('user_id') == $u->id)>
-                                    {{ $u->name }} ({{ ucfirst($u->role) }})
+                                    {{ $u->name }} ({{ strtoupper($u->role) }})
                                 </option>
                             @endforeach
                         </select>
@@ -96,11 +96,13 @@
                                             $roleClass = match($log->user->role) {
                                                 'admin'      => 'bg-red-100 text-red-700',
                                                 'supervisor' => 'bg-yellow-100 text-yellow-700',
+                                                'qa'         => 'bg-blue-100 text-blue-700',
+                                                'qc'         => 'bg-purple-100 text-purple-700',
                                                 default      => 'bg-green-100 text-green-700',
                                             };
                                         @endphp
                                         <span class="text-xs px-1.5 py-0.5 rounded {{ $roleClass }}">
-                                            {{ ucfirst($log->user->role) }}
+                                            {{ strtoupper($log->user->role) }}
                                         </span>
                                     @else
                                         <span class="text-gray-400 italic">Deleted user</span>
