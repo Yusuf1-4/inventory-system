@@ -22,15 +22,22 @@ class ItemRequestController extends Controller
     {
         $items = Item::with(['suppliers', 'stockReceipts'])->where('quantity', '>', 0)->active()->orderBy('name')->get();
 
-        // Build map: item_id => { vendor_name => [expiry_dates] }
+        // Rebuilt map structure: item_id => { vendor_name => { lot_number => { batch_no => expiry_date } } }
         $itemVendorData = $items->mapWithKeys(function ($item) {
             $vendors = $item->stockReceipts
                 ->groupBy('supplier_name')
-                ->map(function ($recs) {
-                    return $recs->pluck('expiry_date')
-                        ->filter()
-                        ->map(fn($d) => $d->format('Y-m-d'))
-                        ->unique()->sort()->values();
+                ->map(function ($receiptsByVendor) {
+                    // Group by lot number first
+                    return $receiptsByVendor->groupBy('lot_number')
+                        ->map(function ($receiptsByLot) {
+                            $batches = [];
+                            foreach ($receiptsByLot as $receipt) {
+                                $batchNo = $receipt->batch_no ?: 'Unknown Batch';
+                                // Map the batch to its expiry date
+                                $batches[$batchNo] = $receipt->expiry_date ? $receipt->expiry_date->format('Y-m-d') : '';
+                            }
+                            return $batches;
+                        });
                 });
             return [$item->id => $vendors];
         });
@@ -46,6 +53,8 @@ class ItemRequestController extends Controller
             'purpose'            => 'required|string|max:255',
             'notes'              => 'nullable|string',
             'vendor_name'        => 'nullable|string|max:255',
+            'lot_number'             => 'required|string|max:255', // Added validation rule for Lot No
+            'batch_number'       => 'nullable|string|max:255',
             'expiry_date'        => 'nullable|date',
         ]);
 

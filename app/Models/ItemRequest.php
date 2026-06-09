@@ -11,7 +11,7 @@ class ItemRequest extends Model
 
     protected $fillable = [
         'item_id', 'requested_by', 'quantity_requested', 'purpose', 'notes',
-        'vendor_name', 'expiry_date',
+        'vendor_name', 'lot_number', 'batch_number', 'expiry_date',
         'status', 'reviewed_by', 'reviewed_at',
     ];
 

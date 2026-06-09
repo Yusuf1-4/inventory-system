@@ -21,6 +21,7 @@
                     <form method="POST" action="{{ route('item-requests.store') }}">
                         @csrf
 
+                        {{-- 1. Item Dropdown --}}
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Item *</label>
                             <select name="item_id" id="item_id" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
@@ -34,6 +35,7 @@
                             @error('item_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
 
+                        {{-- 2. Vendor Dropdown --}}
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Vendor / Supplier</label>
                             <select name="vendor_name" id="vendor_name" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
@@ -42,10 +44,29 @@
                             @error('vendor_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
 
+                        {{-- 3. Lot Number Dropdown --}}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Lot No. *</label>
+                            <select name="lot_number" id="lot_number" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">-- Select Vendor first --</option>
+                            </select>
+                            @error('lot_number')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        {{-- 4. Batch Number Dropdown (NEW) --}}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Batch No. *</label>
+                            <select name="batch_number" id="batch_number" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">-- Select Lot No first --</option>
+                            </select>
+                            @error('batch_number')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        {{-- 5. Expiry Date Dropdown --}}
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
                             <select name="expiry_date" id="expiry_date" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                <option value="">-- Select Vendor first --</option>
+                                <option value="">-- Select Batch No first --</option>
                             </select>
                             @error('expiry_date')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -82,8 +103,10 @@
 
     <script>
     const itemVendorData = @json($itemVendorData);
-    const oldVendor  = "{{ old('vendor_name') }}";
-    const oldExpiry  = "{{ old('expiry_date') }}";
+    const oldVendor      = "{{ old('vendor_name') }}";
+    const oldLot         = "{{ old('lot_number') }}";
+    const oldBatch       = "{{ old('batch_number') }}";
+    const oldExpiry      = "{{ old('expiry_date') }}";
 
     function formatDate(ymd) {
         if (!ymd) return ymd;
@@ -93,21 +116,25 @@
     }
 
     function updateVendors(itemId) {
-        const vendorSel  = document.getElementById('vendor_name');
-        const expirySel  = document.getElementById('expiry_date');
+        const vendorSel = document.getElementById('vendor_name');
+        const lotSel    = document.getElementById('lot_number');
+        const batchSel  = document.getElementById('batch_number');
+        const expirySel = document.getElementById('expiry_date');
+
         const vendors    = itemId ? (itemVendorData[itemId] ?? {}) : {};
         const vendorList = Object.keys(vendors);
 
-        vendorSel.innerHTML  = '';
-        expirySel.innerHTML  = '<option value="">-- Select Vendor first --</option>';
+        vendorSel.innerHTML = '';
+        lotSel.innerHTML    = '<option value="">-- Select Vendor first --</option>';
+        batchSel.innerHTML  = '<option value="">-- Select Lot No first --</option>';
+        expirySel.innerHTML = '<option value="">-- Select Batch No first --</option>';
 
         if (vendorList.length === 0) {
             vendorSel.innerHTML = '<option value="">-- No vendor data --</option>';
             return;
         }
 
-        const placeholder = new Option('-- Select Vendor --', '');
-        vendorSel.appendChild(placeholder);
+        vendorSel.appendChild(new Option('-- Select Vendor --', ''));
         vendorList.forEach(function(name) {
             const opt = new Option(name, name);
             if (name === oldVendor) opt.selected = true;
@@ -115,36 +142,110 @@
         });
 
         if (oldVendor && vendors[oldVendor]) {
-            updateExpiry(itemId, oldVendor);
+            updateLots(itemId, oldVendor);
         }
     }
 
-    function updateExpiry(itemId, vendorName) {
+    function updateLots(itemId, vendorName) {
+        const lotSel    = document.getElementById('lot_number');
+        const batchSel  = document.getElementById('batch_number');
         const expirySel = document.getElementById('expiry_date');
-        const dates     = (itemVendorData[itemId] ?? {})[vendorName] ?? [];
+
+        const lots    = (itemId && vendorName) ? ((itemVendorData[itemId] ?? {})[vendorName] ?? {}) : {};
+        const lotList = Object.keys(lots);
+
+        lotSel.innerHTML    = '';
+        batchSel.innerHTML  = '<option value="">-- Select Lot No first --</option>';
+        expirySel.innerHTML = '<option value="">-- Select Batch No first --</option>';
+
+        if (lotList.length === 0) {
+            lotSel.innerHTML = '<option value="">-- No lot data --</option>';
+            return;
+        }
+
+        lotSel.appendChild(new Option('-- Select Lot No --', ''));
+        lotList.forEach(function(lot) {
+            const opt = new Option(lot, lot);
+            if (lot === oldLot) opt.selected = true;
+            lotSel.appendChild(opt);
+        });
+
+        if (oldLot && lots[oldLot]) {
+            updateBatches(itemId, vendorName, oldLot);
+        }
+    }
+
+    function updateBatches(itemId, vendorName, lotNo) {
+        const batchSel  = document.getElementById('batch_number');
+        const expirySel = document.getElementById('expiry_date');
+
+        const batches    = (itemId && vendorName && lotNo) ? (((itemVendorData[itemId] ?? {})[vendorName] ?? {})[lotNo] ?? {}) : {};
+        const batchList  = Object.keys(batches);
+
+        batchSel.innerHTML  = '';
+        expirySel.innerHTML = '<option value="">-- Select Batch No first --</option>';
+
+        if (batchList.length === 0) {
+            batchSel.innerHTML = '<option value="">-- No batch data --</option>';
+            return;
+        }
+
+        batchSel.appendChild(new Option('-- Select Batch No --', ''));
+        batchList.forEach(function(batch) {
+            const opt = new Option(batch, batch);
+            if (batch === oldBatch) opt.selected = true;
+            batchSel.appendChild(opt);
+        });
+
+        if (oldBatch && batches[oldBatch]) {
+            updateExpiry(itemId, vendorName, lotNo, oldBatch);
+        }
+    }
+
+    function updateExpiry(itemId, vendorName, lotNo, batchNo) {
+        const expirySel = document.getElementById('expiry_date');
+
+        // Drill down 4 levels to get the specific expiry date for this batch
+        const expiryDate = (itemId && vendorName && lotNo && batchNo)
+            ? ((((itemVendorData[itemId] ?? {})[vendorName] ?? {})[lotNo] ?? {})[batchNo])
+            : null;
 
         expirySel.innerHTML = '';
 
-        const placeholder = new Option(dates.length ? '-- Select Expiry Date --' : '-- No expiry recorded --', '');
-        expirySel.appendChild(placeholder);
+        if (!expiryDate) {
+            expirySel.innerHTML = '<option value="">-- No expiry recorded --</option>';
+            return;
+        }
 
-        dates.forEach(function(d) {
-            const opt = new Option(formatDate(d), d);
-            if (d === oldExpiry) opt.selected = true;
-            expirySel.appendChild(opt);
-        });
+        const opt = new Option(formatDate(expiryDate), expiryDate);
+        opt.selected = true;
+        expirySel.appendChild(opt);
     }
 
+    // Event Listeners
     document.getElementById('item_id').addEventListener('change', function() {
         updateVendors(this.value);
     });
 
     document.getElementById('vendor_name').addEventListener('change', function() {
         const itemId = document.getElementById('item_id').value;
-        updateExpiry(itemId, this.value);
+        updateLots(itemId, this.value);
     });
 
-    // Restore on validation error
+    document.getElementById('lot_number').addEventListener('change', function() {
+        const itemId = document.getElementById('item_id').value;
+        const vendorName = document.getElementById('vendor_name').value;
+        updateBatches(itemId, vendorName, this.value);
+    });
+
+    document.getElementById('batch_number').addEventListener('change', function() {
+        const itemId = document.getElementById('item_id').value;
+        const vendorName = document.getElementById('vendor_name').value;
+        const lotNo = document.getElementById('lot_number').value;
+        updateExpiry(itemId, vendorName, lotNo, this.value);
+    });
+
+    // Restore UI state on validation error redirects
     const initItem = document.getElementById('item_id').value;
     if (initItem) updateVendors(initItem);
     </script>

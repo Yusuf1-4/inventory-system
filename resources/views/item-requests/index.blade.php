@@ -20,6 +20,7 @@
                             <tr>
                                 <th class="px-4 py-3">Date</th>
                                 <th class="px-4 py-3">Item</th>
+                                <th class="px-4 py-3">Lot No</th>
                                 <th class="px-4 py-3 text-right">Qty Requested</th>
                                 <th class="px-4 py-3">Vendor</th>
                                 <th class="px-4 py-3">Expiry Date</th>
@@ -35,6 +36,7 @@
                                 <td class="px-4 py-3 font-medium">
                                     <a href="{{ route('items.show', $req->item) }}" class="text-indigo-600 hover:underline">{{ $req->item->name }}</a>
                                 </td>
+                                <td class="px-4 py-3">{{ $req->lot_number ?? '—' }}</td>
                                 <td class="px-4 py-3 text-right font-semibold">{{ $req->quantity_requested }} {{ $req->item->unit }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-600">{{ $req->vendor_name ?? '—' }}</td>
                                 <td class="px-4 py-3 text-sm">
